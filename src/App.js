@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import dark_green from './assets/dark_green_.jpg';
@@ -22,10 +22,14 @@ import {
   Link,
   useRouteMatch,
   Redirect,
-  useParams,
   withRouter,
-  useHistory,
 } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addProductToChart,
+  deleteProductCart,
+  editJumlahProduct,
+} from './reducers/listCartReducer';
 
 function MarketPlace() {
   return (
@@ -228,7 +232,40 @@ function Home() {
 }
 
 function Product() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
+  const dispatch = useDispatch();
+  const listProduct = useSelector((state) => state.listProduct);
+
+  const _renderCardProduct = (product) => {
+    const { nama, harga, desc, id, category } = product;
+    return (
+      <div
+        className='col-lg-4 col-md-6 mb-4'
+        onClick={() => {
+          alert('Product Telah di Tambahkan');
+          dispatch(addProductToChart(product));
+        }}
+      >
+        <div className='card h-100'>
+          <img src={dark_green} alt='gambar' />
+          <div className='card-body'>
+            <h4 className='card-title'>
+              <a>{nama}</a>
+            </h4>
+            <h5>Rp {harga}</h5>
+            <p className='card-text'>
+              {desc} - {category}
+            </p>
+          </div>
+          <div className='card-footer'>
+            <small className='text-muted'>
+              &#9733; &#9733; &#9733; &#9733; &#9734;
+            </small>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className='container'>
@@ -251,101 +288,11 @@ function Product() {
             <br />
             <div className='container'>
               <div className='row'>
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={dark_green} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Dark Green</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>
-                        Natural Short Glossy - Dark Green
-                      </p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={light_blue} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Light Blue</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>
-                        Natural Short Glossy - Light Blue
-                      </p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={light_grey} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Light Grey</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>
-                        Natural Short Glossy - Light Grey
-                      </p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={light_purple} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Light Purple</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>Natural Short Glossy - Purple</p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={skin} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Skin</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>Natural Short Glossy - Skin</p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
+                {listProduct
+                  .filter((product) => product.category === 'glossy')
+                  .map((param) => {
+                    return _renderCardProduct(param);
+                  })}
               </div>
             </div>
           </Route>
@@ -353,97 +300,9 @@ function Product() {
             <br />
             <div className='container'>
               <div className='row'>
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={cheese} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Cheese</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>Oval Short Matte - Chese</p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={mulberry} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Mulberry</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>Oval Short Matte - Mulberry</p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={sunflower} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Sunflower</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>Oval Short Matte - Sunflower</p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={sky} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Sky</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>Oval Short Matte - Sky</p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='col-lg-4 col-md-6 mb-4'>
-                  <div className='card h-100'>
-                    <img src={deep_coffee} alt='gambar' />
-                    <div className='card-body'>
-                      <h4 className='card-title'>
-                        <a>Deep Coffee</a>
-                      </h4>
-                      <h5>Rp 30.000</h5>
-                      <p className='card-text'>
-                        Oval Short Matte - Deep Coffee
-                      </p>
-                    </div>
-                    <div className='card-footer'>
-                      <small className='text-muted'>
-                        &#9733; &#9733; &#9733; &#9733; &#9734;
-                      </small>
-                    </div>
-                  </div>
-                </div>
+                {listProduct
+                  .filter((product) => product.category === 'matte')
+                  .map(_renderCardProduct)}
               </div>
             </div>
           </Route>
@@ -456,7 +315,43 @@ function Product() {
 }
 
 function Cart() {
-  let { path, url } = useRouteMatch();
+  const dispatch = useDispatch();
+  const listCart = useSelector((state) => state.listCart);
+
+  const _renderCartCell = (product, index) => {
+    const { nama, harga, desc, id, category, jumlah } = product;
+    return (
+      <tr>
+        <td>{/* <img src={''} />{' '} */}</td>
+        <td>{nama}</td>
+        <td>In Stock</td>
+        <td>
+          <input
+            className='form-control'
+            type='text'
+            value={jumlah}
+            onChange={(event) => {
+              dispatch(
+                editJumlahProduct({ index, jumlah: event.target.value })
+              );
+            }}
+          />
+        </td>
+        <td className='text-right'>Rp {harga}</td>
+        <td className='text-right'>Rp {harga * jumlah}</td>
+        <td className='text-right'>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() => {
+              dispatch(deleteProductCart(index));
+            }}
+          >
+            Hapus
+          </button>
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div className='container'>
@@ -476,26 +371,16 @@ function Cart() {
                   <th scope='col' className='text-right'>
                     Price
                   </th>
-                  <th> </th>
+                  <th scope='col' className='text-right'>
+                    Total Price
+                  </th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <img src={sky} />{' '}
-                  </td>
-                  <td>Sky</td>
-                  <td>In Stock</td>
-                  <td>
-                    <input className='form-control' type='text' value='1' />
-                  </td>
-                  <td className='text-right'>Rp 30.000</td>
-                  <td className='text-right'>
-                    <button className='btn btn-sm btn danger'>
-                      <i className='fa fa-trash'></i>{' '}
-                    </button>
-                  </td>
-                </tr>
+                {listCart.map((productCart, index) => {
+                  return _renderCartCell(productCart, index);
+                })}
               </tbody>
             </table>
           </div>
@@ -531,7 +416,6 @@ class Login extends Component {
             <p className='m-0 text-center text-while'>You Must Login First</p>
           </div>
           <button className='btn btn-primary' onClick={this.login}>
-            {' '}
             Login{' '}
           </button>
         </footer>
