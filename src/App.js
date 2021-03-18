@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import dark_green from './assets/dark_green_.jpg';
 import light_blue from './assets/light_blue_.jpg';
@@ -46,6 +46,9 @@ function MarketPlace() {
                     <li class="nav-item">
                         <Link class="nav-link" to="/product">Product</Link>
                     </li>
+                    <li class="nav-item">
+                        <Link class="nav-link" to="/cart">Cart</Link>
+                    </li>
                     </ul>
                 </div>
                 </div>
@@ -56,6 +59,7 @@ function MarketPlace() {
                     <Route exact path="/home" component={Home} />
                     <Route path="/login" component={Login} />
                     <PrivateRoute path="/product" component={Product} />
+                    <PrivateRoute path="/cart" component={Cart} />
                 </Switch>
         </Router>
     )
@@ -77,7 +81,7 @@ const AuthButton = withRouter(({ history }) =>
     fakeAuth.isAuthenticated ? (
         <p id="logout">
             <button
-                className='btn btn-warning'
+                className='btn btn-sm btn-warning'
                 onClick={() => {
                     fakeAuth.signout(() => history.push("/home"));
                 }}>
@@ -90,6 +94,24 @@ const AuthButton = withRouter(({ history }) =>
             </p>
         )
 );
+
+// const AuthButtonBuy = withRouter(({ history }) =>
+//     fakeAuth.isAuthenticated ? (
+//         <p id="buy">
+//             <button
+//                 className='btn btn-warning'
+//                 onClick={() => {
+//                     fakeAuth.signout(() => history.push("/cart"));
+//                 }}>
+//                 <p>Beli</p>
+//             </button>
+//         </p>
+//     ) : (
+//             <p id="warning-log" >
+//                 You are not Log in!
+//             </p>
+//         )
+// );
 
 function PrivateRoute({ component: Component, ...rest }) {
     return (
@@ -343,61 +365,50 @@ function Product() {
                     </Route>
                     <Route exact path={path}></Route>
                     <Route exact path={path}></Route>
-                    <Route path={`${path}/:dataId`}>
-                        <DataBody />
-                     </Route>
                 </Switch>
             </div>   
         </div>
     )
 }
 
-function DataBody() {
-    let { dataId } = useParams();
+function Cart() {
+    let { path, url } = useRouteMatch();
 
-    if (dataId === "NSG") {
-        return (
+    return (
+        <div className="container">
+            <h1 className="my-4">Cart</h1>
             <div className="row">
-
-                <div className="col-lg-4 col-md-6 mb-4">
-                    <div className="card h-100">
-                        <img src={dark_green} alt="gambar"/>
-                        <div className="card-body">
-                            <h4 className="card-title">
-                                <a>Dark Green</a>
-                            </h4>
-                            <h5>$24.99</h5>
-                            <p className="card-text">Natural Short Glossy - Dark Green</p>
-                        </div>
-                        <div className="card-footer">
-                            <small className="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    } else if (dataId === "OSM") {
-        return (
-            <div className="row">
-
-            <div className="col-lg-4 col-md-6 mb-4">
-                <div className="card h-100">
-                    <img src={dark_green} alt="gambar"/>
-                    <div className="card-body">
-                        <h4 className="card-title">
-                            <a>Dark Green</a>
-                        </h4>
-                        <h5>$24.99</h5>
-                        <p className="card-text">Natural Short Glossy - Dark Green</p>
-                    </div>
-                    <div className="card-footer">
-                        <small className="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+                <div className="col-12">
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> </th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Available</th>
+                                    <th scope="col" className="text-center">Quantity</th>
+                                    <th scope="col" className="text-right">Price</th>
+                                    <th> </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src={sky} /> </td>
+                                    <td>Sky</td>
+                                    <td>In Stock</td>
+                                    <td><input className="form-control" type="text" value="1" /></td>
+                                    <td className="text-right">Rp 30.000</td>
+                                    <td className="text-right"><button className="btn btn-sm btn danger">
+                                        <i className="fa fa-trash"></i> </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        )
-    }
+    )
 }
 
 class Login extends Component {
